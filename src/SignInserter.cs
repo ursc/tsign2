@@ -54,7 +54,7 @@ namespace tsign2
         {
             var bt = (BlockTable)tr.GetObject(doc.Database.BlockTableId, OpenMode.ForRead, false);
             var btr = (BlockTableRecord)tr.GetObject(bt[BlockTableRecord.PaperSpace], OpenMode.ForRead);
-            var objId = findBlockRef(tr, btr, data.SignUser.Rawname);
+            var objId = findBlockRef(tr, btr, data.SignUser.Blockname);
             if (objId.Handle.Value == 0) {
                 var acIdMap = new IdMapping();
                 var bsObjCol = new ObjectIdCollection();
@@ -63,7 +63,7 @@ namespace tsign2
                 bt.UpgradeOpen();
                 doc.Database.WblockCloneObjects(bsObjCol, btr.ObjectId, acIdMap, DuplicateRecordCloning.Ignore, false);
 
-                objId = findBlockRef(tr, btr, data.SignUser.Rawname);
+                objId = findBlockRef(tr, btr, data.SignUser.Blockname);
                 if (objId.Handle.Value > 0) {
                     var br = (BlockReference)tr.GetObject(objId, OpenMode.ForRead, false);
                     br.UpgradeOpen();
@@ -85,9 +85,9 @@ namespace tsign2
         private ObjectId findBlockRef(Transaction tr, BlockTableRecord btr, string bname)
         {
             foreach (ObjectId objId in btr) {
-                DBObject br = tr.GetObject(objId, OpenMode.ForRead, false);
-                if (br != null && br is BlockReference) {
-                    var dbtr = (BlockTableRecord)tr.GetObject((br as BlockReference).BlockTableRecord, OpenMode.ForRead, false);
+                var br = tr.GetObject(objId, OpenMode.ForRead, false) as BlockReference;
+                if (br != null) {
+                    var dbtr = (BlockTableRecord)tr.GetObject(br.BlockTableRecord, OpenMode.ForRead, false);
                     if (bname.CompareTo(dbtr.Name) == 0) {
                         return objId;
                     }

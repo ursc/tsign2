@@ -82,7 +82,7 @@ namespace tsign2
                         var dbtr = (BlockTableRecord)tr.GetObject(br.BlockTableRecord, OpenMode.ForRead, false);
                         if (!dbtr.Name.StartsWith("*")) {
                             var cname = CorrectName(dbtr.Name);
-                            var user = new SignUser(objId, cname);
+                            var user = new SignUser(objId, dbtr.Name, cname);
                             users.Add(user);
                         }
                     }

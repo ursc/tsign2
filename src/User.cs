@@ -9,12 +9,9 @@ namespace tsign2
 
         public string Lastname;
         public string Fullname;
-        public string Rawname;
 
         public User(string rawname)
         {
-            Rawname = rawname;
-
             ParseRawName(rawname);
         }
 
